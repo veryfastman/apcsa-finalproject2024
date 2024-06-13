@@ -45,10 +45,11 @@ public class RegistrationFrame extends JFrame {
 	private JButton buttonSearch;
 	private JButton buttonPerformSearch;
 	private JButton buttonSave;
+	private JButton buttonRefresh;
 	private JComboBox comboBoxSearch;
 	private JTable table;
 	private DefaultTableModel model;
-	private ArrayList<Student1> myStudents;
+	private static ArrayList<Student1> myStudents;
 
 	/**
 	 * Launch the application.
@@ -160,6 +161,7 @@ public class RegistrationFrame extends JFrame {
 						break;
 					}
 				}
+				selectedButton = getSelectedRadioButton(gradeGroup).getText();
 				fields = new String[] { textFieldLastName.getText(), textFieldFirstName.getText(), textFieldID.getText(), selectedButton };
 				if (!checkEmpty(fields)) {
 					return;
@@ -234,6 +236,17 @@ public class RegistrationFrame extends JFrame {
 		this.comboBoxSearch.setBounds(11, 230, 150, 22);
 		this.comboBoxSearch.setEnabled(false);
 		contentPane.add(comboBoxSearch);
+
+		this.buttonRefresh = new JButton("Refresh");
+		this.buttonRefresh.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				model.setRowCount(0);
+				loadFile();
+			}
+		});
+		this.buttonRefresh.setBounds(380, 282, 150, 23);
+		contentPane.add(this.buttonRefresh);
 		
 		this.buttonSave = new JButton("Save");
 		this.buttonSave.addActionListener(new ActionListener() {
@@ -242,16 +255,26 @@ public class RegistrationFrame extends JFrame {
 				writeToFile();
 			}
 		});
-		this.buttonSave.setBounds(543, 282, 150, 23);
+		this.buttonSave.setBounds(535, 282, 150, 23);
 		contentPane.add(this.buttonSave);
-		
+
 		this.table = new JTable(model);
 		this.table.getTableHeader().setReorderingAllowed(false);
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBounds(369, 11, 326, 264);
 		contentPane.add(scrollPane);
 	}
-	
+
+	public static AbstractButton getSelectedRadioButton(ButtonGroup group) {
+		for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+			AbstractButton currentButton = buttons.nextElement();
+			if (currentButton.isSelected()) {
+				return currentButton;
+			}
+		}
+		return null;
+	}
+
 	private boolean checkEmpty(String[] fields) {
 		for (String item : fields) {
 			if (item.length() < 1) {
@@ -304,10 +327,10 @@ public class RegistrationFrame extends JFrame {
 		return true;
 	}
 	
-	private void writeToFile() {
+	public static void writeToFile() {
 		try {
 			FileWriter writer = new FileWriter(new File("student.txt"));
-			for (Student1 student : this.myStudents) {
+			for (Student1 student : myStudents) {
 				for (String info : student.getStudentInfo()) {
 					writer.write(info + "\n");
 				}
@@ -318,7 +341,7 @@ public class RegistrationFrame extends JFrame {
 		}
 	}
 	
-	private void loadFile() {
+	public void loadFile() {
 		try {
 			Scanner infile = new Scanner(new File("student.txt"));
 			while (infile.hasNextLine()) {

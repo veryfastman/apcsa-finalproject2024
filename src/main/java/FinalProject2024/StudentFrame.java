@@ -1,9 +1,18 @@
 package FinalProject2024;
 
-import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JRadioButton;
+import javax.swing.JPanel;
+import javax.swing.ButtonGroup;
+import javax.swing.AbstractButton;
 import java.awt.Label;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Enumeration;
 
 public class StudentFrame extends JFrame {
@@ -89,6 +98,7 @@ public class StudentFrame extends JFrame {
 		JRadioButton radioButton12 = new JRadioButton("12");
 		radioButton12.setBounds(212, 78, 44, 23);
 		this.gradeGroup.add(radioButton12);
+		contentPane.add(radioButton12);
 
 		for (Enumeration<AbstractButton> buttons = gradeGroup.getElements(); buttons.hasMoreElements();) {
 			AbstractButton currentButton = buttons.nextElement();
@@ -97,7 +107,20 @@ public class StudentFrame extends JFrame {
 				break;
 			}
 		}
-		contentPane.add(radioButton12);
-	}
 
+		this.buttonSave = new JButton("Save");
+		this.buttonSave.setBounds(11, 265, 150, 23);
+		this.buttonSave.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				student.setLastName(textFieldLastName.getText());
+				student.setFirstName(textFieldFirstName.getText());
+				student.setId(textFieldID.getText());
+				student.setGrade(RegistrationFrame.getSelectedRadioButton(gradeGroup).getText());
+				setVisible(false);
+				dispose();
+			}
+		});
+		contentPane.add(this.buttonSave);
+	}
 }
